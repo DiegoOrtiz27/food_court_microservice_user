@@ -1,17 +1,15 @@
-package com.foodquart.microserviceuser.infrastructure.out.jpa.adapter;
+package com.foodquart.microserviceuser.infrastructure.out.client.adapter;
 
 import com.foodquart.microserviceuser.domain.spi.IPasswordEncoderPort;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BCryptPasswordEncoderAdapter implements IPasswordEncoderPort {
+@RequiredArgsConstructor
+public class PasswordEncoderAdapter implements IPasswordEncoderPort {
 
-    private final BCryptPasswordEncoder encoder;
-
-    public BCryptPasswordEncoderAdapter() {
-        this.encoder = new BCryptPasswordEncoder();
-    }
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Override
     public String encode(String rawPassword) {
