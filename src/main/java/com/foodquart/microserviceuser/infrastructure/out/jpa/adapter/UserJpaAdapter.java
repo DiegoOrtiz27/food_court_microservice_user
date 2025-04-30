@@ -19,7 +19,7 @@ public class UserJpaAdapter implements IUserPersistencePort {
 
     @Override
     public UserModel saveUser(UserModel userModel) {
-        UserEntity userEntity = userEntityMapper.toUserEntity(userModel);
+        UserEntity userEntity = userEntityMapper.toEntity(userModel);
 
         RoleEntity roleEntity = roleRepository.findById(userModel.getRole().getId())
                 .orElseThrow(() -> new RuntimeException("Role not found: " + userModel.getRole().getId()));

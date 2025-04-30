@@ -1,11 +1,5 @@
 package com.foodquart.microserviceuser.infrastructure.exceptionhandler;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
-public class ErrorResponse {
-    private final String errorCode;
-    private final String message;
+public record ErrorResponse(String errorCode, String message) {
 }

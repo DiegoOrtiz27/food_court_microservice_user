@@ -6,4 +6,6 @@ public interface IOwnerPersistencePort {
 
     OwnerModel saveOwner(OwnerModel ownerModel);
 
+    boolean existsById(Long id);
+
 }

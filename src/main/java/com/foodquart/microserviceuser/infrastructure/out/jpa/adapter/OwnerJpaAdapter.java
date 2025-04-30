@@ -18,7 +18,7 @@ public class OwnerJpaAdapter implements IOwnerPersistencePort {
 
     @Override
     public OwnerModel saveOwner(OwnerModel ownerModel) {
-        OwnerEntity ownerEntity = ownerEntityMapper.toOwnerEntity(ownerModel);
+        OwnerEntity ownerEntity = ownerEntityMapper.toEntity(ownerModel);
 
         UserEntity userEntity = userRepository.findById(ownerModel.getUser().getId())
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + ownerModel.getUser().getId()));
@@ -28,6 +28,11 @@ public class OwnerJpaAdapter implements IOwnerPersistencePort {
 
         OwnerEntity saved = ownerRepository.save(ownerEntity);
         return ownerEntityMapper.toOwnerModel(saved);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return ownerRepository.existsById(id);
     }
 
 }
