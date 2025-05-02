@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class OwnerRequestDto {
+public class UserRegisterRequestDto {
     @NotBlank(message = "First name is required")
     private String firstName;
 

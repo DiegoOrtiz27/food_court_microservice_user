@@ -11,7 +11,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface IUserEntityMapper {
 
-    UserEntity toEntity(UserModel model);
+    UserEntity toEntity(UserModel user);
 
-    UserModel toUserModel(UserEntity entity);
+    UserModel toUserModel(UserEntity userEntity);
 }
