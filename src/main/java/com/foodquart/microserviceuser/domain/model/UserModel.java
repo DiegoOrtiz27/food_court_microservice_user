@@ -1,5 +1,6 @@
 package com.foodquart.microserviceuser.domain.model;
 
+import com.foodquart.microserviceuser.domain.util.Role;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -17,5 +18,5 @@ public class UserModel {
     private LocalDate birthDate;
     private String email;
     private String password;
-    private RoleModel role;
+    private Role role;
 }

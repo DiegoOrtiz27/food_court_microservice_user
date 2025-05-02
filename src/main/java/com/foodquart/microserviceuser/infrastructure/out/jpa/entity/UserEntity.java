@@ -1,5 +1,6 @@
 package com.foodquart.microserviceuser.infrastructure.out.jpa.entity;
 
+import com.foodquart.microserviceuser.domain.util.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,7 +38,7 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    private RoleEntity role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 }

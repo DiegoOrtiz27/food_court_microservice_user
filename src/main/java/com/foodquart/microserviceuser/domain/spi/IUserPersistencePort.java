@@ -2,6 +2,8 @@ package com.foodquart.microserviceuser.domain.spi;
 
 import com.foodquart.microserviceuser.domain.model.UserModel;
 
+import java.util.Optional;
+
 public interface IUserPersistencePort {
 
     UserModel saveUser(UserModel userModel);
@@ -9,4 +11,8 @@ public interface IUserPersistencePort {
     boolean existsByEmail(String email);
 
     boolean existsByDocumentId(String documentId);
+
+    Optional<UserModel> findById(Long id);
+
+    Optional<UserModel> findByEmail(String email);
 }
