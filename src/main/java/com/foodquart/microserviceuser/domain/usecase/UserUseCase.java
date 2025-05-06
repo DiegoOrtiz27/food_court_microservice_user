@@ -20,6 +20,7 @@ public class UserUseCase implements IUserServicePort {
 
     @Override
     public UserModel saveUser(UserModel userModel) {
+        userModel.setEmail(userModel.getEmail().toLowerCase());
         ValidationUtil.validateRequiredFields(userModel);
         ValidationUtil.validateFormat(userModel);
         ValidationUtil.validateByRole(userModel);

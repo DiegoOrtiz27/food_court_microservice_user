@@ -8,6 +8,7 @@ import com.foodquart.microserviceuser.domain.model.UserModel;
 import com.foodquart.microserviceuser.domain.spi.IJwtProviderPort;
 import com.foodquart.microserviceuser.domain.spi.IPasswordEncoderPort;
 import com.foodquart.microserviceuser.domain.spi.IUserPersistencePort;
+import com.foodquart.microserviceuser.domain.util.UserMessages;
 
 public class AuthUseCase implements IAuthServicePort {
 
@@ -24,10 +25,10 @@ public class AuthUseCase implements IAuthServicePort {
     @Override
     public String authenticate(AuthModel authModel) {
         UserModel user = userPersistencePort.findByEmail(authModel.getEmail())
-                .orElseThrow(() -> new NoDataFoundException("User not found"));
+                .orElseThrow(() -> new NoDataFoundException(UserMessages.USER_NOT_FOUND));
 
         if (!passwordEncoderPort.matches(authModel.getPassword(), user.getPassword())) {
-            throw new InvalidCredentialsException("Incorrect password");
+            throw new InvalidCredentialsException(UserMessages.INVALID_CREDENTIALS);
         }
 
         return jwtProviderPort.generateToken(user);
