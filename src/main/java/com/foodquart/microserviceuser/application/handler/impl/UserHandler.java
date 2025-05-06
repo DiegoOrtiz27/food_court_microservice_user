@@ -1,12 +1,11 @@
 package com.foodquart.microserviceuser.application.handler.impl;
 
-import com.foodquart.microserviceuser.application.dto.request.UserRegisterRequestDto;
-import com.foodquart.microserviceuser.application.dto.response.GetUserByEmailResponseDto;
+import com.foodquart.microserviceuser.application.dto.request.CreateEmployeeRequestDto;
+import com.foodquart.microserviceuser.application.dto.request.CreateOwnerRequestDto;
+import com.foodquart.microserviceuser.application.dto.response.CreateUserResponseDto;
 import com.foodquart.microserviceuser.application.handler.IUserHandler;
 import com.foodquart.microserviceuser.application.mapper.IUserRequestMapper;
-import com.foodquart.microserviceuser.application.mapper.IUserResponseMapper;
 import com.foodquart.microserviceuser.domain.api.IUserServicePort;
-import com.foodquart.microserviceuser.domain.exception.NoDataFoundException;
 import com.foodquart.microserviceuser.domain.util.Role;
 import com.foodquart.microserviceuser.domain.model.UserModel;
 import jakarta.transaction.Transactional;
@@ -21,19 +20,20 @@ public class UserHandler implements IUserHandler {
 
     private final IUserServicePort userServicePort;
     private final IUserRequestMapper userRequestMapper;
-    private final IUserResponseMapper userResponseMapper;
 
     @Override
-    public void createOwner(UserRegisterRequestDto userRegisterRequestDto) {
-        UserModel user = userRequestMapper.toUser(userRegisterRequestDto);
+    public CreateUserResponseDto createOwner(CreateOwnerRequestDto createOwnerRequestDto) {
+        UserModel user = userRequestMapper.toUser(createOwnerRequestDto);
         user.setRole(Role.OWNER);
-        userServicePort.saveUser(user);
+        user = userServicePort.saveUser(user);
+        return userRequestMapper.toResponse("The owner has been created successfully", user.getId());
     }
 
     @Override
-    public GetUserByEmailResponseDto getUserByEmail(String email) {
-        UserModel user = userServicePort.getUserByEmail(email)
-                                    .orElseThrow(() -> new NoDataFoundException("The user was not found"));
-        return userResponseMapper.toResponse(user);
+    public CreateUserResponseDto createEmployee(CreateEmployeeRequestDto createEmployeeRequestDto) {
+        UserModel user = userRequestMapper.toUser(createEmployeeRequestDto);
+        user.setRole(Role.EMPLOYEE);
+        user = userServicePort.saveUser(user);
+        return userRequestMapper.toResponse("The employee has been created successfully", user.getId());
     }
 }

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HasRoleResponseDto {
-    private Boolean hasRole;
+public class CreateUserResponseDto {
+    private String response;
+    private Long userId;
 }

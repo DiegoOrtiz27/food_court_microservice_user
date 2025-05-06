@@ -1,12 +1,13 @@
 package com.foodquart.microserviceuser.application.handler;
 
-import com.foodquart.microserviceuser.application.dto.request.UserRegisterRequestDto;
-import com.foodquart.microserviceuser.application.dto.response.GetUserByEmailResponseDto;
+import com.foodquart.microserviceuser.application.dto.request.CreateEmployeeRequestDto;
+import com.foodquart.microserviceuser.application.dto.request.CreateOwnerRequestDto;
+import com.foodquart.microserviceuser.application.dto.response.CreateUserResponseDto;
 
 public interface IUserHandler {
 
-    void createOwner(UserRegisterRequestDto userRegisterRequestDto);
+    CreateUserResponseDto createOwner(CreateOwnerRequestDto createOwnerRequestDto);
 
-    GetUserByEmailResponseDto getUserByEmail(String email);
+    CreateUserResponseDto createEmployee(CreateEmployeeRequestDto createEmployeeRequestDto);
 
 }
