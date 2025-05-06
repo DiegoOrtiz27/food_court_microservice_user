@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,21 +21,11 @@ public class AuthController {
 
     private final IAuthHandler authHandler;
 
-    @Operation(
-            summary = "Login to the system",
-            description = "Allows a user (ADMIN, OWNER, EMPLOYEE, CLIENT) to authenticate using email and password. Returns a JWT token if credentials are valid.",
-            tags = { "Authentication" }
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Authentication successful",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request format",
-                    content = @Content),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials",
-                    content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found",
-                    content = @Content)
-    })
+    @Operation(summary = "Login to the system", description = "Allows a user (ADMIN, OWNER, EMPLOYEE, CLIENT) to authenticate using email and password. Returns a JWT token if credentials are valid.", tags = { "Authentication" })
+    @ApiResponse(responseCode = "200", description = "Authentication successful", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponseDto.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid request format", content = @Content)
+    @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content)
+    @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(

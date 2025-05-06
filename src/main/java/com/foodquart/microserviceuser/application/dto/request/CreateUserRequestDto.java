@@ -4,9 +4,11 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
-public class CreateEmployeeRequestDto {
+public class CreateUserRequestDto {
     @NotBlank(message = "First name is required")
     private String firstName;
 
@@ -20,6 +22,9 @@ public class CreateEmployeeRequestDto {
     @NotBlank(message = "Phone number is required")
     @Pattern(regexp = "\\+?\\d{1,13}", message = "Phone number is invalid (up to 13 digits, optional +)")
     private String phone;
+
+    @Past(message = "Birth date must be in the past")
+    private LocalDate birthDate;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email format is invalid")
