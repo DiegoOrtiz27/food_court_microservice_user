@@ -6,8 +6,12 @@ import com.foodquart.microserviceuser.domain.exception.EmailAlreadyExistsExcepti
 import com.foodquart.microserviceuser.domain.exception.NoDataFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -40,5 +44,25 @@ public class GlobalExceptionHandler {
         ex.printStackTrace();
         ErrorResponse error = new ErrorResponse("INTERNAL_SERVER_ERROR", "An unexpected error occurred.");
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        List<ValidationError> errors = fieldErrors.stream()
+                .map(error -> new ValidationError(
+                        error.getField(),
+                        error.getDefaultMessage(),
+                        error.getRejectedValue()))
+                .toList();
+
+        ValidationErrorResponse response = new ValidationErrorResponse(
+                "VALIDATION_FAILED",
+                "Validation failed for one or more fields",
+                errors);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

@@ -29,7 +29,7 @@ public class JwtProviderAdapter implements IJwtProviderPort {
 
     @Override
     public String generateToken(UserModel user) {
-        Claims claims = Jwts.claims().setSubject(user.getEmail());
+        Claims claims = Jwts.claims().setSubject(user.getId().toString());
         claims.put("role", user.getRole().name());
 
         Date now = new Date();
@@ -54,9 +54,9 @@ public class JwtProviderAdapter implements IJwtProviderPort {
     }
 
     @Override
-    public String getEmailFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build()
-                .parseClaimsJws(token).getBody().getSubject();
+    public Long getIdFromToken(String token) {
+        return Long.valueOf(Jwts.parserBuilder().setSigningKey(key).build()
+                .parseClaimsJws(token).getBody().getSubject());
     }
 
     @Override

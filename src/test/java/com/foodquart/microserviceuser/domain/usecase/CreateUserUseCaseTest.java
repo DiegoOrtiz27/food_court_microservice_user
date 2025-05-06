@@ -118,9 +118,6 @@ class CreateUserUseCaseTest {
     @Test
     @DisplayName("Should throw exception when user is OWNER and underage")
     void shouldThrowWhenUserIsUnderage() {
-        when(userPersistencePort.existsByEmail(underageOwnerUser.getEmail())).thenReturn(false);
-        when(userPersistencePort.existsByDocumentId(underageOwnerUser.getDocumentId())).thenReturn(false);
-
         assertThrows(UserNotAdultException.class,
                 () -> createUserUseCase.saveUser(underageOwnerUser));
     }

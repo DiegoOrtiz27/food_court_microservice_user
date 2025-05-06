@@ -8,14 +8,18 @@ import com.foodquart.microserviceuser.domain.model.UserModel;
 import com.foodquart.microserviceuser.domain.spi.IJwtProviderPort;
 import com.foodquart.microserviceuser.domain.spi.IPasswordEncoderPort;
 import com.foodquart.microserviceuser.domain.spi.IUserPersistencePort;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class AuthUseCase implements IAuthServicePort {
 
     private final IUserPersistencePort userPersistencePort;
     private final IPasswordEncoderPort passwordEncoderPort;
     private final IJwtProviderPort jwtProviderPort;
+
+    public AuthUseCase(IUserPersistencePort userPersistencePort, IPasswordEncoderPort passwordEncoderPort, IJwtProviderPort jwtProviderPort) {
+        this.userPersistencePort = userPersistencePort;
+        this.passwordEncoderPort = passwordEncoderPort;
+        this.jwtProviderPort = jwtProviderPort;
+    }
 
     @Override
     public String authenticate(AuthModel authModel) {

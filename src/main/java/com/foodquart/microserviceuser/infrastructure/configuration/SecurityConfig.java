@@ -1,5 +1,6 @@
 package com.foodquart.microserviceuser.infrastructure.configuration;
 
+import com.foodquart.microserviceuser.domain.util.Role;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,8 +32,9 @@ public class SecurityConfig {
                             "/swagger-ui.html"
                          ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user/createOwner").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/roles/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user/createOwner").hasRole(Role.ADMIN.toString())
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user/createEmployee").hasRole(Role.OWNER.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/roles/**").hasRole(Role.ADMIN.toString())
                         .requestMatchers(HttpMethod.GET, "/api/v1/user/email").authenticated()
                         .anyRequest().authenticated()
                 )
