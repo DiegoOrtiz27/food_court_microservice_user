@@ -2,6 +2,7 @@ package com.foodquart.microserviceuser.infrastructure.input.rest;
 
 import com.foodquart.microserviceuser.application.dto.request.CreateUserRequestDto;
 import com.foodquart.microserviceuser.application.dto.response.CreateUserResponseDto;
+import com.foodquart.microserviceuser.application.dto.response.GetUserInfoResponseDto;
 import com.foodquart.microserviceuser.application.handler.IUserHandler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,10 +25,6 @@ public class UserRestController {
 
     @Operation(
             summary = "Create a new restaurant owner",
-            description = "Allows an ADMIN user to create a new Owner account in the system. " +
-                    "The request must contain valid user data. The created user will have the OWNER role. " +
-                    "Validation includes: valid email format, numeric document, phone with max 13 characters and optional '+', " +
-                    "and age verification (must be over 18).",
             tags = { "Users" }
     )
     @ApiResponse(responseCode = "201", description = "Owner created successfully")
@@ -51,10 +48,6 @@ public class UserRestController {
 
     @Operation(
             summary = "Create a new employee",
-            description = "Allows an OWNER user to create a new Employee account in the system. " +
-                    "The request must contain valid user data. The created user will have the EMPLOYEE role. " +
-                    "Validation includes: valid email format, numeric document, phone with max 13 characters and optional '+', " +
-                    "and age verification (must be over 18).",
             tags = { "Users" }
     )
     @ApiResponse(responseCode = "201", description = "Employee created successfully")
@@ -76,8 +69,7 @@ public class UserRestController {
         return ResponseEntity.ok(userHandler.createEmployee(createUserRequestDto));
     }
 
-    @Operation(summary = "Create a new customer", description = "Create a new customer account in the system. Validation includes: valid email format, numeric document, phone with max 13 characters and optional '+', and age verification (must be over 18).", tags = { "Users" }
-    )
+    @Operation(summary = "Create a new customer")
     @ApiResponse(responseCode = "201", description = "Customer created successfully")
     @ApiResponse(responseCode = "400", description = "Validation failed: invalid fields like email, phone, or underage", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "409", description = "Conflict: Email or document already registered", content = @Content)
@@ -94,5 +86,13 @@ public class UserRestController {
             @Valid @RequestBody CreateUserRequestDto createUserRequestDto
     ) {
         return ResponseEntity.ok(userHandler.createCustomer(createUserRequestDto));
+    }
+
+    @Operation(summary = "Get user information")
+    @ApiResponse(responseCode = "200", description = "User information retrieved successfully")
+    @ApiResponse(responseCode = "404", description = "User not found")
+    @GetMapping("/{userId}")
+    public ResponseEntity<GetUserInfoResponseDto> getUserInfo(@PathVariable Long userId) {
+        return ResponseEntity.ok(userHandler.getUserInfo(userId));
     }
 }

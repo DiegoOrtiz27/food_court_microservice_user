@@ -20,7 +20,7 @@ public class CreateUserRequestDto {
     private String documentId;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "\\+?\\d{1,13}", message = "Phone number is invalid (up to 13 digits, optional +)")
+    @Pattern(regexp = "^\\+[1-9]\\d{1,3}\\d{7,14}$", message = "Phone number must include country code (e.g., +57xxxxxxxxxx)")
     private String phone;
 
     @Past(message = "Birth date must be in the past")

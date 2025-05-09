@@ -1,8 +1,7 @@
 package com.foodquart.microserviceuser.domain.usecase;
 
 import com.foodquart.microserviceuser.domain.api.IAuthServicePort;
-import com.foodquart.microserviceuser.domain.exception.InvalidCredentialsException;
-import com.foodquart.microserviceuser.domain.exception.NoDataFoundException;
+import com.foodquart.microserviceuser.domain.exception.DomainException;
 import com.foodquart.microserviceuser.domain.model.AuthModel;
 import com.foodquart.microserviceuser.domain.model.UserModel;
 import com.foodquart.microserviceuser.domain.spi.IJwtProviderPort;
@@ -25,10 +24,10 @@ public class AuthUseCase implements IAuthServicePort {
     @Override
     public String authenticate(AuthModel authModel) {
         UserModel user = userPersistencePort.findByEmail(authModel.getEmail())
-                .orElseThrow(() -> new NoDataFoundException(UserMessages.USER_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(UserMessages.USER_NOT_FOUND));
 
         if (!passwordEncoderPort.matches(authModel.getPassword(), user.getPassword())) {
-            throw new InvalidCredentialsException(UserMessages.INVALID_CREDENTIALS);
+            throw new DomainException(UserMessages.INVALID_CREDENTIALS);
         }
 
         return jwtProviderPort.generateToken(user);

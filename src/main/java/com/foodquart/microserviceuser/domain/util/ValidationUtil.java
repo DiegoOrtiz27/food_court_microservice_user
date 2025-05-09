@@ -8,10 +8,11 @@ import java.time.Period;
 
 public class ValidationUtil {
     public static final String EMAIL_REGEX = "^[\\w+.-]+@[\\w.-]+\\.[a-z]{2,}$";
-    public static final String PHONE_REGEX = "^\\+?\\d{10,13}$";
+    public static final String PHONE_REGEX = "^\\+[1-9]\\d{1,3}\\d{4,14}$";
     public static final String NUMERIC_REGEX = "^\\d+$";
 
     public static final int MAX_PHONE_LENGTH = 13;
+    public static final int MIN_PHONE_LENGTH = 8;
     public static final int MIN_ADULT_AGE = 18;
     public static final String FIELD_FIRST_NAME = "Name";
     public static final String FIELD_LAST_NAME = "Last name";
@@ -30,10 +31,19 @@ public class ValidationUtil {
         return email != null && email.matches(EMAIL_REGEX);
     }
 
-    public static boolean isValidPhoneNumber(String phoneNumber, int maxLength) {
-        return phoneNumber != null &&
-                phoneNumber.matches(PHONE_REGEX) &&
-                phoneNumber.length() <= maxLength;
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null) {
+            return false;
+        }
+        if (!phoneNumber.matches(PHONE_REGEX)) {
+            return false;
+        }
+
+        String numberWithoutPlus = phoneNumber.substring(1);
+        int numberLength = numberWithoutPlus.length();
+
+        return numberLength >= (MIN_PHONE_LENGTH + 1) &&
+                numberLength <= MAX_PHONE_LENGTH;
     }
 
     public static boolean isNumericDocument(String documentId) {
@@ -42,47 +52,47 @@ public class ValidationUtil {
 
     public static void validateRequiredFields(UserModel user) {
         if (isBlank(user.getFirstName())) {
-            throw new RequiredFieldException(FIELD_FIRST_NAME);
+            throw new DomainException(String.format(UserMessages.REQUIRED_FIELD, FIELD_FIRST_NAME));
         }
         if (isBlank(user.getLastName())) {
-            throw new RequiredFieldException(FIELD_LAST_NAME);
+            throw new DomainException(String.format(UserMessages.REQUIRED_FIELD, FIELD_LAST_NAME));
         }
         if (isBlank(user.getDocumentId())) {
-            throw new RequiredFieldException(FIELD_DOCUMENT_ID);
+            throw new DomainException(String.format(UserMessages.REQUIRED_FIELD, FIELD_DOCUMENT_ID));
         }
         if (isBlank(user.getPhone())) {
-            throw new RequiredFieldException(FIELD_PHONE);
+            throw new DomainException(String.format(UserMessages.REQUIRED_FIELD, FIELD_PHONE));
         }
         if (isBlank(user.getEmail())) {
-            throw new RequiredFieldException(FIELD_EMAIL);
+            throw new DomainException(String.format(UserMessages.REQUIRED_FIELD, FIELD_EMAIL));
         }
         if (isBlank(user.getPassword())) {
-            throw new RequiredFieldException(FIELD_PASSWORD);
+            throw new DomainException(String.format(UserMessages.REQUIRED_FIELD, FIELD_PASSWORD));
         }
         if (user.getRole() == null) {
-            throw new RequiredFieldException(FIELD_ROLE);
+            throw new DomainException(String.format(UserMessages.REQUIRED_FIELD, FIELD_ROLE));
         }
     }
 
     public static void validateFormat(UserModel user) {
         if (!isValidEmail(user.getEmail())) {
-            throw new InvalidEmailFormatException(user.getEmail());
+            throw new DomainException(String.format(UserMessages.INVALID_EMAIL,user.getEmail()));
         }
-        if (!isValidPhoneNumber(user.getPhone(), MAX_PHONE_LENGTH)) {
-            throw new InvalidPhoneNumberException(user.getPhone());
+        if (!isValidPhoneNumber(user.getPhone())) {
+            throw new DomainException(String.format(UserMessages.INVALID_PHONE_NUMBER, user.getPhone()));
         }
         if (!isNumericDocument(user.getDocumentId())) {
-            throw new InvalidDocumentIdException(user.getDocumentId());
+            throw new DomainException(String.format(UserMessages.INVALID_DOCUMENT_ID, user.getDocumentId()));
         }
     }
 
     public static void validateByRole(UserModel user) {
         if(user.getRole() == Role.OWNER) {
             if (user.getBirthDate() == null) {
-                throw new RequiredFieldException(FIELD_BIRTHDATE);
+                throw new DomainException(String.format(UserMessages.REQUIRED_FIELD, FIELD_BIRTHDATE));
             }
             if (!isAdult(user.getBirthDate())) {
-                throw new UserNotAdultException(user.getFirstName(), user.getLastName());
+                throw new DomainException(String.format(UserMessages.USER_NOT_ADULT, user.getFirstName(), user.getLastName()));
             }
         }
     }

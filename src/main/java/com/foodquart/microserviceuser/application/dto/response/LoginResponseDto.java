@@ -1,7 +1,6 @@
 package com.foodquart.microserviceuser.application.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter

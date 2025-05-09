@@ -4,7 +4,7 @@ import lombok.*;
 
 @Getter
 @Setter
-public class CreateUserResponseDto {
+public class GetUserInfoResponseDto {
     private Long userId;
-    private String response;
+    private String phone;
 }
