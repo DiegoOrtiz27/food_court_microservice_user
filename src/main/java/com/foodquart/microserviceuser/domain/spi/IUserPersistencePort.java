@@ -13,4 +13,6 @@ public interface IUserPersistencePort {
     boolean existsByDocumentId(String documentId);
 
     Optional<UserModel> findByEmail(String email);
+
+    Optional<UserModel> findById(Long userId);
 }

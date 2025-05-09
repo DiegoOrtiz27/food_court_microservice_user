@@ -10,4 +10,5 @@ import org.mapstruct.ReportingPolicy;
 public interface IAuthResponseMapper {
 
     LoginResponseDto toResponse(String token);
+
 }
