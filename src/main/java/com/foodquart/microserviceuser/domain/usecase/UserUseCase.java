@@ -5,6 +5,7 @@ import com.foodquart.microserviceuser.domain.exception.*;
 import com.foodquart.microserviceuser.domain.model.UserModel;
 import com.foodquart.microserviceuser.domain.spi.IPasswordEncoderPort;
 import com.foodquart.microserviceuser.domain.spi.IUserPersistencePort;
+import com.foodquart.microserviceuser.domain.util.Role;
 import com.foodquart.microserviceuser.domain.util.UserMessages;
 import com.foodquart.microserviceuser.domain.util.ValidationUtil;
 
@@ -19,6 +20,29 @@ public class UserUseCase implements IUserServicePort {
     }
 
     @Override
+    public UserModel createOwner(UserModel userModel) {
+        userModel.setRole(Role.OWNER);
+        return saveUser(userModel);
+    }
+
+    @Override
+    public UserModel createEmployee(UserModel userModel) {
+        userModel.setRole(Role.EMPLOYEE);
+        return saveUser(userModel);
+    }
+
+    @Override
+    public UserModel createCustomer(UserModel userModel) {
+        userModel.setRole(Role.CUSTOMER);
+        return saveUser(userModel);
+    }
+
+    @Override
+    public UserModel getUserInfo(Long userId) {
+        return userPersistencePort.findById(userId)
+                .orElseThrow(() -> new DomainException(UserMessages.USER_NOT_FOUND));
+    }
+
     public UserModel saveUser(UserModel userModel) {
         userModel.setEmail(userModel.getEmail().toLowerCase());
         ValidationUtil.validateRequiredFields(userModel);
@@ -37,12 +61,6 @@ public class UserUseCase implements IUserServicePort {
 
         return userPersistencePort.saveUser(userModel);
 
-    }
-
-    @Override
-    public UserModel getUserInfo(Long userId) {
-        return userPersistencePort.findById(userId)
-                .orElseThrow(() -> new DomainException(UserMessages.USER_NOT_FOUND));
     }
 
 }

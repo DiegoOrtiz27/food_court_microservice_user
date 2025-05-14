@@ -23,10 +23,7 @@ public class UserRestController {
 
     private final IUserHandler userHandler;
 
-    @Operation(
-            summary = "Create a new restaurant owner",
-            tags = { "Users" }
-    )
+    @Operation(summary = "Create a new restaurant owner")
     @ApiResponse(responseCode = "201", description = "Owner created successfully")
     @ApiResponse(responseCode = "400", description = "Validation failed: invalid fields like email, phone, or underage", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "403", description = "Forbidden: Only ADMIN users are allowed to create owners", content = @Content)
@@ -46,10 +43,7 @@ public class UserRestController {
         return ResponseEntity.ok(userHandler.createOwner(createOwnerRequestDto));
     }
 
-    @Operation(
-            summary = "Create a new employee",
-            tags = { "Users" }
-    )
+    @Operation(summary = "Create a new employee")
     @ApiResponse(responseCode = "201", description = "Employee created successfully")
     @ApiResponse(responseCode = "400", description = "Validation failed: invalid fields like email, phone, or underage", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
     @ApiResponse(responseCode = "403", description = "Forbidden: Only OWNER users are allowed to create employee", content = @Content)

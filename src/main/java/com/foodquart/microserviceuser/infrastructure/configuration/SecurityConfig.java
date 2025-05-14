@@ -1,6 +1,5 @@
 package com.foodquart.microserviceuser.infrastructure.configuration;
 
-import com.foodquart.microserviceuser.domain.util.Role;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +12,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static com.foodquart.microserviceuser.domain.util.Role.*;
+import static com.foodquart.microserviceuser.domain.util.SecurityMessages.ACCESS_DENIED;
+import static com.foodquart.microserviceuser.domain.util.SecurityMessages.MISSING_AUTH_HEADER;
 
 @Configuration
 @EnableWebSecurity
@@ -32,10 +35,10 @@ public class SecurityConfig {
                             "/swagger-ui.html"
                          ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user/createOwner").hasRole(Role.ADMIN.toString())
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user/createEmployee").hasRole(Role.OWNER.toString())
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user/createOwner").hasRole(ADMIN.toString())
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user/createEmployee").hasRole(OWNER.toString())
                         .requestMatchers(HttpMethod.POST, "/api/v1/user/createCustomer").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/user/*").hasRole(Role.EMPLOYEE.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/user/*").hasRole(EMPLOYEE.toString())
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -52,12 +55,12 @@ public class SecurityConfig {
         return (request, response, authException) -> {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
-            response.getWriter().write("""
+            response.getWriter().write(String.format("""
                 {
                     "code": "UNAUTHORIZED",
-                    "message": "Missing or invalid Authorization header"
+                    "message": "%s"
                 }
-            """);
+            """, MISSING_AUTH_HEADER));
         };
     }
 
@@ -66,12 +69,12 @@ public class SecurityConfig {
         return (request, response, accessDeniedException) -> {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
-            response.getWriter().write("""
+            response.getWriter().write(String.format("""
                 {
                     "code": "FORBIDDEN",
-                    "message": "You do not have permission to access this resource"
+                    "message": "%s"
                 }
-            """);
+            """, ACCESS_DENIED));
         };
     }
 
