@@ -15,6 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.foodquart.microserviceuser.infrastructure.documentation.APIUserDocumentationConstant.*;
+import static com.foodquart.microserviceuser.infrastructure.documentation.ResponseCode.*;
+
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
@@ -23,16 +26,16 @@ public class UserRestController {
 
     private final IUserHandler userHandler;
 
-    @Operation(summary = "Create a new restaurant owner")
-    @ApiResponse(responseCode = "201", description = "Owner created successfully")
-    @ApiResponse(responseCode = "400", description = "Validation failed: invalid fields like email, phone, or underage", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "403", description = "Forbidden: Only ADMIN users are allowed to create owners", content = @Content)
-    @ApiResponse(responseCode = "409", description = "Conflict: Email or document already registered", content = @Content)
     @PostMapping("/createOwner")
+    @Operation(summary = CREATE_OWNER_SUMMARY)
+    @ApiResponse(responseCode = CODE_201, description = CREATE_OWNER_SUCCESS_DESCRIPTION)
+    @ApiResponse(responseCode = CODE_400, description = CREATE_OWNER_INVALID_FIELDS_DESCRIPTION, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = CODE_403, description = CREATE_OWNER_FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = CODE_409, description = CREATE_OWNER_CONFLICT_DESCRIPTION, content = @Content)
     public ResponseEntity<CreateUserResponseDto> createOwner(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
-                    description = "Owner registration details including name, document, phone, email, etc.",
+                    description = CREATE_OWNER_REQUEST_BODY_DESCRIPTION,
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = CreateUserRequestDto.class)
@@ -43,16 +46,16 @@ public class UserRestController {
         return ResponseEntity.ok(userHandler.createOwner(createOwnerRequestDto));
     }
 
-    @Operation(summary = "Create a new employee")
-    @ApiResponse(responseCode = "201", description = "Employee created successfully")
-    @ApiResponse(responseCode = "400", description = "Validation failed: invalid fields like email, phone, or underage", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "403", description = "Forbidden: Only OWNER users are allowed to create employee", content = @Content)
-    @ApiResponse(responseCode = "409", description = "Conflict: Email or document already registered", content = @Content)
     @PostMapping("/createEmployee")
+    @Operation(summary = CREATE_EMPLOYEE_SUMMARY)
+    @ApiResponse(responseCode = CODE_201, description = CREATE_EMPLOYEE_SUCCESS_DESCRIPTION)
+    @ApiResponse(responseCode = CODE_400, description = CREATE_EMPLOYEE_INVALID_FIELDS_DESCRIPTION, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = CODE_403, description = CREATE_EMPLOYEE_FORBIDDEN_DESCRIPTION, content = @Content)
+    @ApiResponse(responseCode = CODE_409, description = CREATE_EMPLOYEE_CONFLICT_DESCRIPTION, content = @Content)
     public ResponseEntity<CreateUserResponseDto> createEmployee(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
-                    description = "Employee registration details including name, document, phone, email, etc.",
+                    description = CREATE_EMPLOYEE_REQUEST_BODY_DESCRIPTION,
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = CreateUserRequestDto.class)
@@ -63,15 +66,15 @@ public class UserRestController {
         return ResponseEntity.ok(userHandler.createEmployee(createUserRequestDto));
     }
 
-    @Operation(summary = "Create a new customer")
-    @ApiResponse(responseCode = "201", description = "Customer created successfully")
-    @ApiResponse(responseCode = "400", description = "Validation failed: invalid fields like email, phone, or underage", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
-    @ApiResponse(responseCode = "409", description = "Conflict: Email or document already registered", content = @Content)
     @PostMapping("/createCustomer")
+    @Operation(summary = CREATE_CUSTOMER_SUMMARY)
+    @ApiResponse(responseCode = CODE_201, description = CREATE_CUSTOMER_SUCCESS_DESCRIPTION)
+    @ApiResponse(responseCode = CODE_400, description = CREATE_CUSTOMER_INVALID_FIELDS_DESCRIPTION, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+    @ApiResponse(responseCode = CODE_409, description = CREATE_CUSTOMER_CONFLICT_DESCRIPTION)
     public ResponseEntity<CreateUserResponseDto> createCustomer(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
-                    description = "Customer registration details including name, document, phone, email, etc.",
+                    description = CREATE_CUSTOMER_REQUEST_BODY_DESCRIPTION,
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = CreateUserRequestDto.class)
@@ -82,10 +85,10 @@ public class UserRestController {
         return ResponseEntity.ok(userHandler.createCustomer(createUserRequestDto));
     }
 
-    @Operation(summary = "Get user information")
-    @ApiResponse(responseCode = "200", description = "User information retrieved successfully")
-    @ApiResponse(responseCode = "404", description = "User not found")
     @GetMapping("/{userId}")
+    @Operation(summary = GET_USER_INFO_SUMMARY)
+    @ApiResponse(responseCode = CODE_200, description = GET_USER_INFO_SUCCESS_DESCRIPTION)
+    @ApiResponse(responseCode = CODE_404, description = GET_USER_INFO_NOT_FOUND_DESCRIPTION)
     public ResponseEntity<GetUserInfoResponseDto> getUserInfo(@PathVariable Long userId) {
         return ResponseEntity.ok(userHandler.getUserInfo(userId));
     }

@@ -2,7 +2,7 @@ package com.foodquart.microserviceuser.domain.util;
 
 public class UserMessages {
 
-    private UserMessages() {
+    UserMessages() {
         throw new IllegalStateException("Utility class");
     }
 

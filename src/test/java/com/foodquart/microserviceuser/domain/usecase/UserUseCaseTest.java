@@ -211,6 +211,8 @@ class UserUseCaseTest {
                     exception.getMessage());
             verify(userPersistencePort, never()).saveUser(any());
         }
+
+
     }
 
     @Nested
@@ -237,6 +239,161 @@ class UserUseCaseTest {
                     () -> userUseCase.getUserInfo(999L));
 
             assertEquals(UserMessages.USER_NOT_FOUND, exception.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("Create User with Specific Role Tests")
+    class CreateUserWithRoleTests {
+
+        @Test
+        @DisplayName("Should create owner with correct role")
+        void shouldCreateOwnerWithCorrectRole() {
+            UserModel inputUser = createUser(
+                    "New", "Owner", "12345678", "+573001234567",
+                    "new@example.com", "password123", null, LocalDate.now().minusYears(20)
+            );
+
+            UserModel expectedUser = createUser(
+                    "New", "Owner", "12345678", "+573001234567",
+                    "new@example.com", "password123", Role.OWNER, LocalDate.now().minusYears(20)
+            );
+
+            when(userPersistencePort.existsByEmail(inputUser.getEmail())).thenReturn(false);
+            when(userPersistencePort.existsByDocumentId(inputUser.getDocumentId())).thenReturn(false);
+            when(passwordEncoderPort.encode(inputUser.getPassword())).thenReturn("encryptedPassword");
+            when(userPersistencePort.saveUser(any(UserModel.class))).thenReturn(expectedUser);
+
+            UserModel result = userUseCase.createOwner(inputUser);
+
+            assertNotNull(result);
+            assertEquals(Role.OWNER, result.getRole());
+            verify(userPersistencePort).saveUser(any(UserModel.class));
+        }
+
+        @Test
+        @DisplayName("Should create employee with correct role")
+        void shouldCreateEmployeeWithCorrectRole() {
+            UserModel inputUser = createUser(
+                    "New", "Employee", "87654321", "+573008765432",
+                    "employee@example.com", "password456", null, null
+            );
+
+            UserModel expectedUser = createUser(
+                    "New", "Employee", "87654321", "+573008765432",
+                    "employee@example.com", "password456", Role.EMPLOYEE, null
+            );
+
+            when(userPersistencePort.existsByEmail(inputUser.getEmail())).thenReturn(false);
+            when(userPersistencePort.existsByDocumentId(inputUser.getDocumentId())).thenReturn(false);
+            when(passwordEncoderPort.encode(inputUser.getPassword())).thenReturn("encryptedPassword");
+            when(userPersistencePort.saveUser(any(UserModel.class))).thenReturn(expectedUser);
+
+            UserModel result = userUseCase.createEmployee(inputUser);
+
+            assertNotNull(result);
+            assertEquals(Role.EMPLOYEE, result.getRole());
+            verify(userPersistencePort).saveUser(any(UserModel.class));
+        }
+
+        @Test
+        @DisplayName("Should create customer with correct role")
+        void shouldCreateCustomerWithCorrectRole() {
+            UserModel inputUser = createUser(
+                    "New", "Customer", "11223344", "+573009876543",
+                    "customer@example.com", "password789", null, null
+            );
+
+            UserModel expectedUser = createUser(
+                    "New", "Customer", "11223344", "+573009876543",
+                    "customer@example.com", "password789", Role.CUSTOMER, null
+            );
+
+            when(userPersistencePort.existsByEmail(inputUser.getEmail())).thenReturn(false);
+            when(userPersistencePort.existsByDocumentId(inputUser.getDocumentId())).thenReturn(false);
+            when(passwordEncoderPort.encode(inputUser.getPassword())).thenReturn("encryptedPassword");
+            when(userPersistencePort.saveUser(any(UserModel.class))).thenReturn(expectedUser);
+
+            UserModel result = userUseCase.createCustomer(inputUser);
+
+            assertNotNull(result);
+            assertEquals(Role.CUSTOMER, result.getRole());
+            verify(userPersistencePort).saveUser(any(UserModel.class));
+        }
+
+        @Test
+        @DisplayName("Should pass validation when creating owner with age >= 18")
+        void shouldPassValidationWhenCreatingAdultOwner() {
+            UserModel inputUser = createUser(
+                    "Adult", "Owner", "12345678", "+573001234567",
+                    "adult@example.com", "password123", null, LocalDate.now().minusYears(20)
+            );
+
+            when(userPersistencePort.existsByEmail(inputUser.getEmail())).thenReturn(false);
+            when(userPersistencePort.existsByDocumentId(inputUser.getDocumentId())).thenReturn(false);
+            when(passwordEncoderPort.encode(inputUser.getPassword())).thenReturn("encryptedPassword");
+            when(userPersistencePort.saveUser(any(UserModel.class))).thenReturn(inputUser);
+
+            UserModel result = userUseCase.createOwner(inputUser);
+
+            assertNotNull(result);
+            assertEquals(Role.OWNER, result.getRole());
+        }
+
+        @Test
+        @DisplayName("Should throw exception when creating underage owner")
+        void shouldThrowWhenCreatingUnderageOwner() {
+            UserModel underageUser = createUser(
+                    "Young", "Owner", "99999999", "+573001111111",
+                    "young@example.com", "password123", null, LocalDate.now().minusYears(17)
+            );
+
+            DomainException exception = assertThrows(DomainException.class,
+                    () -> userUseCase.createOwner(underageUser));
+
+            assertEquals(String.format(UserMessages.USER_NOT_ADULT, "Young", "Owner"),
+                    exception.getMessage());
+            verify(userPersistencePort, never()).saveUser(any());
+        }
+
+        @Test
+        @DisplayName("Should create employee without birth date")
+        void shouldCreateEmployeeWithoutBirthDate() {
+            UserModel inputUser = createUser(
+                    "New", "Employee", "87654321", "+573008765432",
+                    "employee@example.com", "password456", null, null
+            );
+
+            when(userPersistencePort.existsByEmail(inputUser.getEmail())).thenReturn(false);
+            when(userPersistencePort.existsByDocumentId(inputUser.getDocumentId())).thenReturn(false);
+            when(passwordEncoderPort.encode(inputUser.getPassword())).thenReturn("encryptedPassword");
+            when(userPersistencePort.saveUser(any(UserModel.class))).thenReturn(inputUser);
+
+            UserModel result = userUseCase.createEmployee(inputUser);
+
+            assertNotNull(result);
+            assertEquals(Role.EMPLOYEE, result.getRole());
+            assertNull(result.getBirthDate());
+        }
+
+        @Test
+        @DisplayName("Should create customer without birth date")
+        void shouldCreateCustomerWithoutBirthDate() {
+            UserModel inputUser = createUser(
+                    "New", "Customer", "11223344", "+573009876543",
+                    "customer@example.com", "password789", null, null
+            );
+
+            when(userPersistencePort.existsByEmail(inputUser.getEmail())).thenReturn(false);
+            when(userPersistencePort.existsByDocumentId(inputUser.getDocumentId())).thenReturn(false);
+            when(passwordEncoderPort.encode(inputUser.getPassword())).thenReturn("encryptedPassword");
+            when(userPersistencePort.saveUser(any(UserModel.class))).thenReturn(inputUser);
+
+            UserModel result = userUseCase.createCustomer(inputUser);
+
+            assertNotNull(result);
+            assertEquals(Role.CUSTOMER, result.getRole());
+            assertNull(result.getBirthDate());
         }
     }
 }

@@ -23,7 +23,7 @@ public class ValidationUtil {
     public static final String FIELD_ROLE = "Role";
     public static final String FIELD_BIRTHDATE = "Birthdate";
 
-    private ValidationUtil() {
+    ValidationUtil() {
         throw new AssertionError("Utility class should not be instantiated");
     }
 
